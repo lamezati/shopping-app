@@ -17,11 +17,11 @@ export function ProductCard({ product }: ProductCardProps) {
     const hasHalfStar = rating % 1 >= 0.5;
 
     for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />);
+      stars.push(<Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />);
     }
 
     if (hasHalfStar) {
-      stars.push(<StarHalf key="half" className="w-3 h-3 text-yellow-400" />);
+      stars.push(<StarHalf key="half" className="w-4 h-4 text-yellow-400" />);
     }
 
     return stars;
@@ -29,34 +29,52 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link to={`/product/${product.id}`} className="block">
-      <div className="bg-white p-3 rounded hover:shadow-md transition-shadow duration-200">
-        <div className="aspect-[4/3] mb-2 overflow-hidden rounded">
+      <div className="bg-white p-3 rounded-md hover:shadow-lg transition-shadow duration-200 h-full flex flex-col">
+        <div className="aspect-square mb-2 overflow-hidden bg-white flex items-center justify-center">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+            className="max-h-full max-w-full object-contain"
           />
         </div>
         <h2 className="text-sm font-medium text-gray-900 mb-1 line-clamp-2 min-h-[2.5rem]">
           {product.name}
         </h2>
         <div className="flex items-center mb-1">
-          <div className="flex items-center">
+          <div className="flex items-center mr-1">
             {renderStars(product.rating)}
           </div>
-          <span className="ml-1 text-xs text-gray-600">
+          <span className="text-xs text-gray-600 underline">
             {product.reviewCount.toLocaleString()}
           </span>
         </div>
-        {inStockRetailers.length > 0 && (
+        {inStockRetailers.length > 0 ? (
           <>
-            <p className="text-lg font-bold text-gray-900">
-              ${lowestPrice.toFixed(2)}
-            </p>
-            <p className="text-xs text-gray-700">
-              Free delivery
-            </p>
+            <div className="mt-auto">
+              <div className="flex items-center space-x-1">
+                <span className="text-xs text-gray-500">$</span>
+                <span className="text-lg font-bold text-gray-900">{Math.floor(lowestPrice)}</span>
+                <span className="text-sm font-bold text-gray-900">{(lowestPrice % 1 * 100).toFixed(0)}</span>
+              </div>
+              {lowestPrice > 25 && (
+                <p className="text-xs text-gray-700">
+                  Get <span className="text-blue-600">FREE Delivery</span> {product.retailers[0].deliveryDate}
+                </p>
+              )}
+              {Math.random() > 0.5 && (
+                <div className="mt-1">
+                  <span className="bg-red-100 text-red-800 text-xs px-1 py-0.5">Limited time deal</span>
+                </div>
+              )}
+              {Math.random() > 0.7 && (
+                <p className="text-xs text-gray-600 mt-1">In stock - only {Math.floor(Math.random() * 10) + 1} left</p>
+              )}
+            </div>
           </>
+        ) : (
+          <div className="mt-auto">
+            <p className="text-red-600 text-sm">Temporarily out of stock</p>
+          </div>
         )}
       </div>
     </Link>
