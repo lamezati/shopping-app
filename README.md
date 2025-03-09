@@ -60,3 +60,7 @@ The built files will be in the `dist` directory.
 The application is configured to deploy automatically to GitHub Pages when changes are pushed to the main branch.
 
 Visit the live site at: https://lamezati.github.io/shopping-app/
+
+## Support
+
+For any issues or questions, please open an issue in the repository.
