@@ -8,8 +8,6 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const inStockRetailers = product.retailers.filter(r => r.inStock);
-
   return (
     <Link to={`/product/${product.id}`} className="block">
       <div className="bg-white p-3 rounded-md hover:shadow-lg transition-shadow duration-200 h-full flex flex-col">
@@ -26,20 +24,9 @@ export function ProductCard({ product }: ProductCardProps) {
         
         <div className="mt-auto flex flex-col">
           <div className="mt-1 flex items-center justify-between">
-            <span className="text-xs text-blue-600">
-              {inStockRetailers.length > 0 
-                ? `Compare ${inStockRetailers.length} ${inStockRetailers.length === 1 ? 'store' : 'stores'}` 
-                : 'Check availability'}
-            </span>
+            <span className="text-xs text-blue-600">View details</span>
             <ArrowRight className="w-4 h-4 text-blue-600" />
           </div>
-          
-          {/* Only show in stock status, not pricing */}
-          {inStockRetailers.length === 0 && (
-            <div className="mt-1">
-              <p className="text-orange-600 text-xs">Out of stock at most retailers</p>
-            </div>
-          )}
         </div>
       </div>
     </Link>
