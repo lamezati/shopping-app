@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Remove scrollbar for categories bar while maintaining functionality */
+@layer utilities {
+  .overflow-x-hidden {
+    overflow-x: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  
+  .overflow-x-hidden::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+  
+  /* Amazon-like colors */
+  .bg-amazon-blue {
+    background-color: #131921;
+  }
+  
+  .bg-amazon-light {
+    background-color: #232f3e;
+  }
+  
+  .bg-amazon-yellow {
+    background-color: #febd69;
+  }
+  
+  .text-amazon-orange {
+    color: #ff9900;
+  }
+}
+
+/* Ensures elements are hidden correctly when screen is resized */
+@media (max-width: 1200px) {
+  .nav-link:nth-child(n+6) {
+    display: none;
+  }
+}
+
+@media (max-width: 992px) {
+  .nav-link:nth-child(n+5) {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-link:nth-child(n+4) {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-link:nth-child(n+3) {
+    display: none;
+  }
+}
