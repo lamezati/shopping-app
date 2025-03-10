@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, MapPin, Menu, Search, ChevronRight, ChevronLeft } from 'lucide-react';
+import { ShoppingCart, MapPin, Menu, Search } from 'lucide-react';
 import { categories } from '../types';
 
 interface HeaderProps {
@@ -82,16 +82,15 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
   useEffect(() => {
     // These values are approximations and may need adjustment
     const categoryWidth = 130; // Average width of a category in pixels
-    const allButtonWidth = 60; // Width of "All" button
     const containerPadding = 40; // Padding of the container
     
     // Available width for categories
     const availableWidth = windowWidth - containerPadding;
     
     // Calculate how many categories can fit
-    const numVisible = Math.max(1, Math.floor((availableWidth - allButtonWidth) / categoryWidth));
+    const numVisible = Math.max(1, Math.floor(availableWidth / categoryWidth));
     
-    // Always keep "All" and prioritize other categories
+    // Sort categories by priority
     const sortedCategories = [...navCategories].sort((a, b) => a.priority - b.priority);
     
     // Visible categories are the highest priority ones that fit
@@ -202,9 +201,9 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
       {/* Category navbar with darker blue */}
       <div className="bg-[#232f3e] text-white">
         <div className="max-w-[1500px] mx-auto">
-          <nav className="flex items-center justify-between px-2">
-            {/* Visible categories, no overflow */}
-            <div className="flex-1 flex items-center">
+          <nav className="flex items-center px-2">
+            {/* Only show categories that fit the screen width */}
+            <div className="flex items-center">
               {visibleCategories.map((cat, index) => (
                 <Link 
                   key={index}
@@ -222,16 +221,6 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                 </Link>
               ))}
             </div>
-
-            {/* More button if not all categories are visible */}
-            {visibleCategories.length < navCategories.length && (
-              <button
-                onClick={() => setShowAllCategories(true)}
-                className="flex items-center px-3 py-2 text-sm whitespace-nowrap hover:bg-gray-700"
-              >
-                More <ChevronRight className="w-4 h-4 ml-1" />
-              </button>
-            )}
           </nav>
         </div>
       </div>
