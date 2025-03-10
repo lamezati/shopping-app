@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, MapPin, Menu, Search } from 'lucide-react';
+import { ShoppingCart, MapPin, Menu, Search, ChevronRight } from 'lucide-react';
 import { categories } from '../types';
 
 interface HeaderProps {
@@ -43,29 +43,50 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
     { name: 'Automotive', icon: null, priority: 14 }
   ];
 
-  // Extended categories for the "All" button dropdown
-  const extendedCategories = [
-    // Shopping inspiration sections
-    { title: "Shopping Inspiration", items: [
-      { name: "Trending Products", path: "/trending" },
-      { name: "New Releases", path: "/new-releases" },
-      { name: "Most Wished For", path: "/most-wished" },
-      { name: "Gift Ideas", path: "/gift-ideas" },
-      { name: "Deals of the Day", path: "/deals" },
-      { name: "Clearance Items", path: "/clearance" },
-      { name: "Seasonal Favorites", path: "/seasonal" },
-      { name: "Best Sellers", path: "/best-sellers" }
-    ]},
-    // Deal categories
-    { title: "Deal Categories", items: [
-      { name: "Top Rated Products", path: "/top-rated" },
-      { name: "Price Drops", path: "/price-drops" },
-      { name: "Under $25", path: "/under-25" },
-      { name: "Local Deals", path: "/local-deals" },
-      { name: "Compare Brands", path: "/compare-brands" },
-      { name: "User Favorites", path: "/user-favorites" },
-      { name: "Recently Compared", path: "/recently-compared" }
-    ]}
+  // Shopping inspiration section items
+  const shoppingInspiration = [
+    { name: "Trending", path: "/trending" },
+    { name: "Best Sellers", path: "/best-sellers" },
+    { name: "New Releases", path: "/new-releases" },
+    { name: "Movers & Shakers", path: "/movers-shakers" },
+    { name: "Most Wished For", path: "/most-wished" },
+    { name: "Gift Ideas", path: "/gift-ideas" },
+    { name: "Deals of the Day", path: "/deals" },
+    { name: "Clearance Items", path: "/clearance" }
+  ];
+
+  // Digital content category items
+  const digitalContent = [
+    { name: "Digital Content & Devices", isHeading: true },
+    { name: "Prime Video", path: "/prime-video", hasSubmenu: true },
+    { name: "Amazon Music", path: "/amazon-music", hasSubmenu: true },
+    { name: "Echo & Alexa", path: "/echo-alexa", hasSubmenu: true },
+    { name: "Fire Tablets", path: "/fire-tablets", hasSubmenu: true },
+    { name: "Fire TV", path: "/fire-tv", hasSubmenu: true },
+    { name: "Kindle E-readers & Books", path: "/kindle", hasSubmenu: true },
+    { name: "Audible Books & Originals", path: "/audible", hasSubmenu: true },
+    { name: "Amazon Photos", path: "/photos", hasSubmenu: true },
+    { name: "Amazon Appstore", path: "/appstore", hasSubmenu: true }
+  ];
+
+  // Shop by department category items
+  const shopByDepartment = [
+    { name: "Shop by Department", isHeading: true },
+    { name: "Electronics", path: "/department/electronics", hasSubmenu: true },
+    { name: "Computers", path: "/department/computers", hasSubmenu: true },
+    { name: "Smart Home", path: "/department/smart-home", hasSubmenu: true },
+    { name: "Arts & Crafts", path: "/department/arts-crafts", hasSubmenu: true },
+    { name: "Clothing, Shoes, Jewelry & Watches", path: "/department/clothing", hasSubmenu: true },
+    { name: "Home & Kitchen", path: "/department/home-kitchen", hasSubmenu: true },
+    { name: "Garden & Outdoor", path: "/department/garden", hasSubmenu: true },
+    { name: "Pet Supplies", path: "/department/pet-supplies", hasSubmenu: true },
+    { name: "Health & Household", path: "/department/health", hasSubmenu: true },
+    { name: "Beauty & Personal Care", path: "/department/beauty", hasSubmenu: true },
+    { name: "Toys & Games", path: "/department/toys", hasSubmenu: true },
+    { name: "Sports & Outdoors", path: "/department/sports", hasSubmenu: true },
+    { name: "Automotive", path: "/department/automotive", hasSubmenu: true },
+    { name: "Books", path: "/department/books", hasSubmenu: true },
+    { name: "Amazon Fresh", path: "/fresh", hasSubmenu: true }
   ];
 
   // Update visible categories based on window width
@@ -98,7 +119,7 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
   }, [windowWidth]);
 
   return (
-    <header>
+    <header className="relative">
       {/* Top navbar - dark blue background like Amazon */}
       <div className="bg-[#131921] text-white">
         <div className="max-w-[1500px] mx-auto">
@@ -225,65 +246,108 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
         </div>
       </div>
       
-      {/* All Categories dropdown menu */}
+      {/* All Categories sidebar menu (similar to Amazon style) */}
       {showAllCategories && (
-        <div className="absolute z-50 w-full bg-white shadow-lg text-black">
-          <div className="max-w-[1500px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-            {/* Regular categories */}
-            <div className="col-span-1 lg:col-span-2">
-              <h3 className="font-bold text-lg mb-2 text-blue-800">All Categories</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {categories.map(category => (
-                  <div key={category.id} className="mb-4">
-                    <h4 className="font-semibold text-blue-600 mb-1">
-                      <Link to={`/category/${category.id}`} className="hover:underline">
-                        {category.name}
-                      </Link>
-                    </h4>
-                    <ul className="space-y-1">
-                      {category.subcategories.slice(0, 3).map(sub => (
-                        <li key={sub.id} className="text-sm">
-                          <Link 
-                            to={`/category/${category.id}/${sub.id}`}
-                            className="text-gray-700 hover:text-blue-600 hover:underline"
-                          >
-                            {sub.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Special category collections */}
-            {extendedCategories.map((section, index) => (
-              <div key={index} className="col-span-1">
-                <h3 className="font-bold text-lg mb-2 text-blue-800">{section.title}</h3>
-                <ul className="space-y-2">
-                  {section.items.map((item, idx) => (
-                    <li key={idx}>
-                      <Link 
-                        to={item.path}
-                        className="text-gray-700 hover:text-blue-600 hover:underline"
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+        <div className="fixed inset-0 z-50 flex">
+          {/* Semi-transparent overlay */}
+          <div 
+            className="bg-black bg-opacity-50 absolute inset-0" 
+            onClick={() => setShowAllCategories(false)}
+          ></div>
           
-          <div className="bg-gray-100 p-2 text-center">
+          {/* Sidebar menu */}
+          <div className="relative bg-white text-black h-full w-80 md:w-96 overflow-y-auto">
+            {/* Close button */}
             <button 
               onClick={() => setShowAllCategories(false)}
-              className="text-blue-600 hover:text-blue-800 hover:underline text-sm"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
             >
-              Close
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
             </button>
+            
+            {/* User greeting */}
+            <div className="bg-[#232f3e] text-white p-4 flex items-center">
+              <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center mr-3 text-white font-bold">
+                L
+              </div>
+              <span className="font-bold">Hello, Leonel</span>
+            </div>
+            
+            {/* Shopping Inspiration section */}
+            <div className="border-b border-gray-200">
+              {shoppingInspiration.map((item, index) => (
+                <Link 
+                  key={index}
+                  to={item.path}
+                  className="block px-6 py-3 text-gray-800 hover:bg-gray-100 flex justify-between items-center"
+                  onClick={() => setShowAllCategories(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            
+            {/* Digital Content section */}
+            <div className="border-b border-gray-200">
+              {digitalContent.map((item, index) => (
+                item.isHeading ? (
+                  <div key={index} className="px-6 py-3 font-bold text-gray-900">
+                    {item.name}
+                  </div>
+                ) : (
+                  <Link 
+                    key={index}
+                    to={item.path || '#'}
+                    className="block px-6 py-3 text-gray-800 hover:bg-gray-100 flex justify-between items-center"
+                    onClick={() => setShowAllCategories(false)}
+                  >
+                    {item.name}
+                    {item.hasSubmenu && <ChevronRight className="w-4 h-4 text-gray-400" />}
+                  </Link>
+                )
+              ))}
+            </div>
+            
+            {/* Shop by Department section */}
+            <div className="border-b border-gray-200">
+              {shopByDepartment.map((item, index) => (
+                item.isHeading ? (
+                  <div key={index} className="px-6 py-3 font-bold text-gray-900">
+                    {item.name}
+                  </div>
+                ) : (
+                  <Link 
+                    key={index}
+                    to={item.path || '#'}
+                    className="block px-6 py-3 text-gray-800 hover:bg-gray-100 flex justify-between items-center"
+                    onClick={() => setShowAllCategories(false)}
+                  >
+                    {item.name}
+                    {item.hasSubmenu && <ChevronRight className="w-4 h-4 text-gray-400" />}
+                  </Link>
+                )
+              ))}
+            </div>
+            
+            {/* Help & Settings */}
+            <div className="px-6 py-4">
+              <Link 
+                to="/customer-service"
+                className="block py-2 text-gray-800 hover:underline"
+                onClick={() => setShowAllCategories(false)}
+              >
+                Customer Service
+              </Link>
+              <Link 
+                to="/sign-in"
+                className="block py-2 text-gray-800 hover:underline"
+                onClick={() => setShowAllCategories(false)}
+              >
+                Sign Out
+              </Link>
+            </div>
           </div>
         </div>
       )}
