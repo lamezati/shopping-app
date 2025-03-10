@@ -37,13 +37,17 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
   return (
     <header>
       {/* Top navbar - dark blue background like Amazon */}
-      <div className="bg-amazon-blue text-white">
+      <div className="bg-[#131921] text-white">
         <div className="max-w-[1500px] mx-auto">
           {/* Main header with logo, search, account */}
           <div className="flex items-center px-2 py-2 gap-2">
             {/* Logo */}
-            <Link to="/" className="mr-2">
-              <ShoppingCart className="w-8 h-8 text-white" />
+            <Link to="/" className="flex items-center mr-2">
+              <img 
+                src="/shopping-app/amazon-logo.svg" 
+                alt="Amazon" 
+                className="h-8 w-24 object-contain"
+              />
             </Link>
             
             {/* Delivery address */}
@@ -60,7 +64,7 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
               <div className="relative flex w-full rounded overflow-hidden">
                 <div className="relative">
                   <select 
-                    className="h-full py-2 pl-3 pr-8 bg-gray-100 text-black border-r border-gray-300 text-sm appearance-none cursor-pointer rounded-l"
+                    className="h-full py-2 pl-3 pr-8 bg-[#f3f3f3] text-black border-r border-gray-300 text-sm appearance-none cursor-pointer rounded-l"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
@@ -83,7 +87,7 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   className="flex-1 py-2 px-3 text-black text-sm border-none focus:outline-none"
                 />
                 
-                <button className="bg-amazon-yellow hover:bg-yellow-500 px-4 flex items-center justify-center transition-colors">
+                <button className="bg-[#febd69] hover:bg-[#f3a847] px-4 flex items-center justify-center transition-colors">
                   <Search className="text-black w-5 h-5" />
                 </button>
               </div>
@@ -117,14 +121,14 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
               </div>
               
               {/* Cart */}
-              <div className="relative">
+              <div className="relative flex items-center">
                 <div className="relative">
-                  <span className="absolute -top-1 left-4 bg-amazon-yellow text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-1 left-4 bg-[#f3a847] text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     8
                   </span>
                   <ShoppingCart className="w-8 h-8" />
                 </div>
-                <span className="absolute -bottom-2 right-0 text-xs font-bold">Cart</span>
+                <span className="ml-1 font-bold">Cart</span>
               </div>
             </div>
           </div>
@@ -132,7 +136,7 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
       </div>
       
       {/* Category navbar with darker blue */}
-      <div className="bg-amazon-light text-white">
+      <div className="bg-[#232f3e] text-white">
         <div className="max-w-[1500px] mx-auto">
           <nav className="flex overflow-x-hidden">
             {navCategories.map((cat, index) => (
