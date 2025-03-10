@@ -10,6 +10,7 @@ interface HeaderProps {
 
 export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
   const [category, setCategory] = useState('All');
+  const [showAllCategories, setShowAllCategories] = useState(false);
   
   // Categories for the dropdown
   const searchCategories = [
@@ -22,16 +23,47 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
     'Sports'
   ];
 
-  // Categories for the horizontal navbar (matching Amazon style)
+  // Categories for the horizontal navbar (updated for price comparison app)
   const navCategories = [
     { name: 'All', icon: <Menu className="w-4 h-4" />, className: 'font-bold' },
-    { name: 'Same-Day Delivery', icon: null },
-    { name: 'Medical Care', icon: null },
-    { name: 'Alexa+', icon: null },
-    { name: 'Prime Video', icon: null },
-    { name: 'Prime', icon: null },
-    { name: 'Keep Shopping For', icon: null },
-    { name: 'Household, Health & Baby Care', icon: null }
+    { name: 'Electronics', icon: null },
+    { name: 'Home & Kitchen', icon: null },
+    { name: 'Clothing', icon: null },
+    { name: 'Groceries', icon: null },
+    { name: 'Beauty & Personal Care', icon: null },
+    { name: 'Toys & Games', icon: null },
+    { name: 'Sports & Outdoors', icon: null },
+    { name: 'Books', icon: null },
+    { name: 'Baby', icon: null },
+    { name: 'Pet Supplies', icon: null },
+    { name: 'Tools & Home Improvement', icon: null },
+    { name: 'Health & Household', icon: null },
+    { name: 'Automotive', icon: null }
+  ];
+
+  // Extended categories for the "All" button dropdown
+  const extendedCategories = [
+    // Shopping inspiration sections
+    { title: "Shopping Inspiration", items: [
+      { name: "Trending Products", path: "/trending" },
+      { name: "New Releases", path: "/new-releases" },
+      { name: "Most Wished For", path: "/most-wished" },
+      { name: "Gift Ideas", path: "/gift-ideas" },
+      { name: "Deals of the Day", path: "/deals" },
+      { name: "Clearance Items", path: "/clearance" },
+      { name: "Seasonal Favorites", path: "/seasonal" },
+      { name: "Best Sellers", path: "/best-sellers" }
+    ]},
+    // Deal categories
+    { title: "Deal Categories", items: [
+      { name: "Top Rated Products", path: "/top-rated" },
+      { name: "Price Drops", path: "/price-drops" },
+      { name: "Under $25", path: "/under-25" },
+      { name: "Local Deals", path: "/local-deals" },
+      { name: "Compare Brands", path: "/compare-brands" },
+      { name: "User Favorites", path: "/user-favorites" },
+      { name: "Recently Compared", path: "/recently-compared" }
+    ]}
   ];
 
   return (
@@ -45,7 +77,7 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
             <Link to="/" className="flex items-center mr-2">
               <img 
                 src="/shopping-app/amazon-logo.svg" 
-                alt="Amazon" 
+                alt="PriceScout" 
                 className="h-8 w-24 object-contain"
               />
             </Link>
@@ -83,7 +115,7 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search PriceScout"
+                  placeholder="Compare prices across stores..."
                   className="flex-1 py-2 px-3 text-black text-sm border-none focus:outline-none"
                 />
                 
@@ -138,12 +170,18 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
       {/* Category navbar with darker blue */}
       <div className="bg-[#232f3e] text-white">
         <div className="max-w-[1500px] mx-auto">
-          <nav className="flex overflow-x-hidden">
+          <nav className="flex overflow-x-auto">
             {navCategories.map((cat, index) => (
               <Link 
                 key={index}
-                to={cat.name === 'All' ? '/' : `#${cat.name}`}
+                to={cat.name === 'All' ? '#' : `/category/${cat.name.toLowerCase().replace(/\s+/g, '-')}`}
                 className={`nav-link flex items-center px-3 py-2 text-sm whitespace-nowrap hover:bg-gray-700 ${cat.className || ''}`}
+                onClick={e => {
+                  if (cat.name === 'All') {
+                    e.preventDefault();
+                    setShowAllCategories(!showAllCategories);
+                  }
+                }}
               >
                 {cat.icon && <span className="mr-1">{cat.icon}</span>}
                 {cat.name}
@@ -152,6 +190,69 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
           </nav>
         </div>
       </div>
+      
+      {/* All Categories dropdown menu */}
+      {showAllCategories && (
+        <div className="absolute z-50 w-full bg-white shadow-lg text-black">
+          <div className="max-w-[1500px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+            {/* Regular categories */}
+            <div className="col-span-1 lg:col-span-2">
+              <h3 className="font-bold text-lg mb-2 text-blue-800">All Categories</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {categories.map(category => (
+                  <div key={category.id} className="mb-4">
+                    <h4 className="font-semibold text-blue-600 mb-1">
+                      <Link to={`/category/${category.id}`} className="hover:underline">
+                        {category.name}
+                      </Link>
+                    </h4>
+                    <ul className="space-y-1">
+                      {category.subcategories.slice(0, 3).map(sub => (
+                        <li key={sub.id} className="text-sm">
+                          <Link 
+                            to={`/category/${category.id}/${sub.id}`}
+                            className="text-gray-700 hover:text-blue-600 hover:underline"
+                          >
+                            {sub.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Special category collections */}
+            {extendedCategories.map((section, index) => (
+              <div key={index} className="col-span-1">
+                <h3 className="font-bold text-lg mb-2 text-blue-800">{section.title}</h3>
+                <ul className="space-y-2">
+                  {section.items.map((item, idx) => (
+                    <li key={idx}>
+                      <Link 
+                        to={item.path}
+                        className="text-gray-700 hover:text-blue-600 hover:underline"
+                      >
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          
+          <div className="bg-gray-100 p-2 text-center">
+            <button 
+              onClick={() => setShowAllCategories(false)}
+              className="text-blue-600 hover:text-blue-800 hover:underline text-sm"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
