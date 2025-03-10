@@ -43,50 +43,55 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
     { name: 'Automotive', icon: null, priority: 14 }
   ];
 
-  // Shopping inspiration section items
+  // Shopping inspiration section items - price comparison focused
   const shoppingInspiration = [
-    { name: "Trending", path: "/trending" },
+    { name: "Trending Products", path: "/trending" },
     { name: "Best Sellers", path: "/best-sellers" },
     { name: "New Releases", path: "/new-releases" },
-    { name: "Movers & Shakers", path: "/movers-shakers" },
     { name: "Most Wished For", path: "/most-wished" },
-    { name: "Gift Ideas", path: "/gift-ideas" },
-    { name: "Deals of the Day", path: "/deals" },
-    { name: "Clearance Items", path: "/clearance" }
+    { name: "Today's Best Deals", path: "/todays-deals" },
+    { name: "Price Drops", path: "/price-drops" },
+    { name: "Clearance Items", path: "/clearance" },
+    { name: "Gift Ideas", path: "/gift-ideas" }
   ];
 
-  // Digital content category items
-  const digitalContent = [
-    { name: "Digital Content & Devices", isHeading: true },
-    { name: "Prime Video", path: "/prime-video", hasSubmenu: true },
-    { name: "Amazon Music", path: "/amazon-music", hasSubmenu: true },
-    { name: "Echo & Alexa", path: "/echo-alexa", hasSubmenu: true },
-    { name: "Fire Tablets", path: "/fire-tablets", hasSubmenu: true },
-    { name: "Fire TV", path: "/fire-tv", hasSubmenu: true },
-    { name: "Kindle E-readers & Books", path: "/kindle", hasSubmenu: true },
-    { name: "Audible Books & Originals", path: "/audible", hasSubmenu: true },
-    { name: "Amazon Photos", path: "/photos", hasSubmenu: true },
-    { name: "Amazon Appstore", path: "/appstore", hasSubmenu: true }
+  // Popular price comparison categories
+  const comparisonCategories = [
+    { name: "Popular Price Comparisons", isHeading: true },
+    { name: "Electronics Deals", path: "/deals/electronics" },
+    { name: "Grocery Savings", path: "/deals/grocery" },
+    { name: "Kitchen Essentials", path: "/deals/kitchen" },
+    { name: "Home Improvement", path: "/deals/home-improvement" },
+    { name: "Fashion Discounts", path: "/deals/fashion" },
+    { name: "Beauty Products", path: "/deals/beauty" },
+    { name: "Sports & Outdoor Gear", path: "/deals/sports" },
+    { name: "Baby Products", path: "/deals/baby" }
   ];
 
-  // Shop by department category items
-  const shopByDepartment = [
-    { name: "Shop by Department", isHeading: true },
-    { name: "Electronics", path: "/department/electronics", hasSubmenu: true },
-    { name: "Computers", path: "/department/computers", hasSubmenu: true },
-    { name: "Smart Home", path: "/department/smart-home", hasSubmenu: true },
-    { name: "Arts & Crafts", path: "/department/arts-crafts", hasSubmenu: true },
-    { name: "Clothing, Shoes, Jewelry & Watches", path: "/department/clothing", hasSubmenu: true },
-    { name: "Home & Kitchen", path: "/department/home-kitchen", hasSubmenu: true },
-    { name: "Garden & Outdoor", path: "/department/garden", hasSubmenu: true },
-    { name: "Pet Supplies", path: "/department/pet-supplies", hasSubmenu: true },
-    { name: "Health & Household", path: "/department/health", hasSubmenu: true },
-    { name: "Beauty & Personal Care", path: "/department/beauty", hasSubmenu: true },
-    { name: "Toys & Games", path: "/department/toys", hasSubmenu: true },
-    { name: "Sports & Outdoors", path: "/department/sports", hasSubmenu: true },
-    { name: "Automotive", path: "/department/automotive", hasSubmenu: true },
-    { name: "Books", path: "/department/books", hasSubmenu: true },
-    { name: "Amazon Fresh", path: "/fresh", hasSubmenu: true }
+  // All product departments
+  const allDepartments = [
+    { name: "All Departments", isHeading: true },
+    { name: "Electronics", path: "/category/electronics" },
+    { name: "Computers & Accessories", path: "/category/computers" },
+    { name: "Smart Home", path: "/category/smart-home" },
+    { name: "Appliances", path: "/category/appliances" },
+    { name: "Clothing & Accessories", path: "/category/clothing" },
+    { name: "Shoes", path: "/category/shoes" },
+    { name: "Jewelry & Watches", path: "/category/jewelry" },
+    { name: "Home & Kitchen", path: "/category/home-kitchen" },
+    { name: "Furniture", path: "/category/furniture" },
+    { name: "Garden & Outdoor", path: "/category/garden" },
+    { name: "Tools & Home Improvement", path: "/category/tools" },
+    { name: "Pet Supplies", path: "/category/pet-supplies" },
+    { name: "Health & Household", path: "/category/health" },
+    { name: "Beauty & Personal Care", path: "/category/beauty" },
+    { name: "Toys & Games", path: "/category/toys" },
+    { name: "Sports & Outdoors", path: "/category/sports" },
+    { name: "Automotive", path: "/category/automotive" },
+    { name: "Books & Media", path: "/category/books" },
+    { name: "Grocery & Gourmet", path: "/category/grocery" },
+    { name: "Baby Products", path: "/category/baby" },
+    { name: "Office Products", path: "/category/office" }
   ];
 
   // Update visible categories based on window width
@@ -246,7 +251,7 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
         </div>
       </div>
       
-      {/* All Categories sidebar menu (similar to Amazon style) */}
+      {/* All Categories sidebar menu (focused on price comparison) */}
       {showAllCategories && (
         <div className="fixed inset-0 z-50 flex">
           {/* Semi-transparent overlay */}
@@ -289,9 +294,9 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
               ))}
             </div>
             
-            {/* Digital Content section */}
+            {/* Popular Price Comparisons section */}
             <div className="border-b border-gray-200">
-              {digitalContent.map((item, index) => (
+              {comparisonCategories.map((item, index) => (
                 item.isHeading ? (
                   <div key={index} className="px-6 py-3 font-bold text-gray-900">
                     {item.name}
@@ -304,15 +309,14 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                     onClick={() => setShowAllCategories(false)}
                   >
                     {item.name}
-                    {item.hasSubmenu && <ChevronRight className="w-4 h-4 text-gray-400" />}
                   </Link>
                 )
               ))}
             </div>
             
-            {/* Shop by Department section */}
+            {/* All Departments section */}
             <div className="border-b border-gray-200">
-              {shopByDepartment.map((item, index) => (
+              {allDepartments.map((item, index) => (
                 item.isHeading ? (
                   <div key={index} className="px-6 py-3 font-bold text-gray-900">
                     {item.name}
@@ -321,32 +325,28 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   <Link 
                     key={index}
                     to={item.path || '#'}
-                    className="block px-6 py-3 text-gray-800 hover:bg-gray-100 flex justify-between items-center"
+                    className="block px-6 py-3 text-gray-800 hover:bg-gray-100"
                     onClick={() => setShowAllCategories(false)}
                   >
                     {item.name}
-                    {item.hasSubmenu && <ChevronRight className="w-4 h-4 text-gray-400" />}
                   </Link>
                 )
               ))}
             </div>
             
-            {/* Help & Settings */}
-            <div className="px-6 py-4">
-              <Link 
-                to="/customer-service"
-                className="block py-2 text-gray-800 hover:underline"
-                onClick={() => setShowAllCategories(false)}
-              >
-                Customer Service
-              </Link>
-              <Link 
-                to="/sign-in"
-                className="block py-2 text-gray-800 hover:underline"
-                onClick={() => setShowAllCategories(false)}
-              >
-                Sign Out
-              </Link>
+            {/* Compare by Store */}
+            <div className="px-6 py-3 border-b border-gray-200">
+              <div className="font-bold text-gray-900 mb-2">Compare by Store</div>
+              <div className="grid grid-cols-2 gap-2">
+                <Link to="/store/walmart" className="text-blue-600 hover:underline" onClick={() => setShowAllCategories(false)}>Walmart</Link>
+                <Link to="/store/target" className="text-blue-600 hover:underline" onClick={() => setShowAllCategories(false)}>Target</Link>
+                <Link to="/store/amazon" className="text-blue-600 hover:underline" onClick={() => setShowAllCategories(false)}>Amazon</Link>
+                <Link to="/store/bestbuy" className="text-blue-600 hover:underline" onClick={() => setShowAllCategories(false)}>Best Buy</Link>
+                <Link to="/store/costco" className="text-blue-600 hover:underline" onClick={() => setShowAllCategories(false)}>Costco</Link>
+                <Link to="/store/kroger" className="text-blue-600 hover:underline" onClick={() => setShowAllCategories(false)}>Kroger</Link>
+                <Link to="/store/foodlion" className="text-blue-600 hover:underline" onClick={() => setShowAllCategories(false)}>Food Lion</Link>
+                <Link to="/store/all" className="text-blue-600 hover:underline" onClick={() => setShowAllCategories(false)}>View All</Link>
+              </div>
             </div>
           </div>
         </div>
