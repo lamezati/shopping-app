@@ -9,6 +9,7 @@ interface FeaturedCardProps {
   buttonText?: string;
   backgroundColor?: string;
   textColor?: string;
+  compact?: boolean;
 }
 
 export function FeaturedCard({
@@ -18,17 +19,20 @@ export function FeaturedCard({
   linkPath,
   buttonText = 'See all deals',
   backgroundColor = 'bg-white',
-  textColor = 'text-gray-900'
+  textColor = 'text-gray-900',
+  compact = true
 }: FeaturedCardProps) {
+  const padding = compact ? 'p-2 sm:p-3' : 'p-4';
+  
   return (
-    <div className={`p-4 rounded-lg ${backgroundColor} h-full flex flex-col`}>
-      <h2 className={`text-xl font-bold mb-2 ${textColor}`}>{title}</h2>
+    <div className={`${padding} rounded-lg ${backgroundColor} h-full flex flex-col`}>
+      <h2 className={`text-sm font-bold mb-1 ${textColor}`}>{title}</h2>
       
       {description && (
-        <p className={`mb-3 text-sm ${textColor} opacity-90`}>{description}</p>
+        <p className={`mb-2 text-xs ${textColor} opacity-90`}>{description}</p>
       )}
       
-      <div className="flex-grow flex items-center justify-center mb-4 overflow-hidden rounded-md">
+      <div className="flex-grow flex items-center justify-center mb-2 overflow-hidden rounded-md h-24 sm:h-32">
         <img 
           src={imageUrl} 
           alt={title} 
@@ -38,7 +42,7 @@ export function FeaturedCard({
       
       <Link 
         to={linkPath}
-        className="block w-full text-center py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+        className="block w-full text-center py-1 px-2 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
       >
         {buttonText}
       </Link>
