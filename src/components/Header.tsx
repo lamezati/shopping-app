@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, MapPin, Menu, Search } from 'lucide-react';
+import { ShoppingCart, MapPin, Menu, Search, ChevronRight, ChevronLeft } from 'lucide-react';
 import { categories } from '../types';
 
 interface HeaderProps {
@@ -11,6 +11,8 @@ interface HeaderProps {
 export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
   const [category, setCategory] = useState('All');
   const [showAllCategories, setShowAllCategories] = useState(false);
+  const [visibleCategories, setVisibleCategories] = useState<Array<any>>([]);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   
   // Categories for the dropdown
   const searchCategories = [
@@ -25,20 +27,20 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
 
   // Categories for the horizontal navbar (updated for price comparison app)
   const navCategories = [
-    { name: 'All', icon: <Menu className="w-4 h-4" />, className: 'font-bold' },
-    { name: 'Electronics', icon: null },
-    { name: 'Home & Kitchen', icon: null },
-    { name: 'Clothing', icon: null },
-    { name: 'Groceries', icon: null },
-    { name: 'Beauty & Personal Care', icon: null },
-    { name: 'Toys & Games', icon: null },
-    { name: 'Sports & Outdoors', icon: null },
-    { name: 'Books', icon: null },
-    { name: 'Baby', icon: null },
-    { name: 'Pet Supplies', icon: null },
-    { name: 'Tools & Home Improvement', icon: null },
-    { name: 'Health & Household', icon: null },
-    { name: 'Automotive', icon: null }
+    { name: 'All', icon: <Menu className="w-4 h-4" />, className: 'font-bold', priority: 1 },
+    { name: 'Electronics', icon: null, priority: 2 },
+    { name: 'Home & Kitchen', icon: null, priority: 3 },
+    { name: 'Clothing', icon: null, priority: 4 },
+    { name: 'Groceries', icon: null, priority: 5 },
+    { name: 'Beauty & Personal Care', icon: null, priority: 6 },
+    { name: 'Toys & Games', icon: null, priority: 7 },
+    { name: 'Sports & Outdoors', icon: null, priority: 8 },
+    { name: 'Books', icon: null, priority: 9 },
+    { name: 'Baby', icon: null, priority: 10 },
+    { name: 'Pet Supplies', icon: null, priority: 11 },
+    { name: 'Tools & Home Improvement', icon: null, priority: 12 },
+    { name: 'Health & Household', icon: null, priority: 13 },
+    { name: 'Automotive', icon: null, priority: 14 }
   ];
 
   // Extended categories for the "All" button dropdown
@@ -65,6 +67,36 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
       { name: "Recently Compared", path: "/recently-compared" }
     ]}
   ];
+
+  // Update visible categories based on window width
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Calculate how many categories can be displayed
+  useEffect(() => {
+    // These values are approximations and may need adjustment
+    const categoryWidth = 130; // Average width of a category in pixels
+    const allButtonWidth = 60; // Width of "All" button
+    const containerPadding = 40; // Padding of the container
+    
+    // Available width for categories
+    const availableWidth = windowWidth - containerPadding;
+    
+    // Calculate how many categories can fit
+    const numVisible = Math.max(1, Math.floor((availableWidth - allButtonWidth) / categoryWidth));
+    
+    // Always keep "All" and prioritize other categories
+    const sortedCategories = [...navCategories].sort((a, b) => a.priority - b.priority);
+    
+    // Visible categories are the highest priority ones that fit
+    setVisibleCategories(sortedCategories.slice(0, numVisible));
+  }, [windowWidth]);
 
   return (
     <header>
@@ -170,23 +202,36 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
       {/* Category navbar with darker blue */}
       <div className="bg-[#232f3e] text-white">
         <div className="max-w-[1500px] mx-auto">
-          <nav className="flex overflow-x-auto">
-            {navCategories.map((cat, index) => (
-              <Link 
-                key={index}
-                to={cat.name === 'All' ? '#' : `/category/${cat.name.toLowerCase().replace(/\s+/g, '-')}`}
-                className={`nav-link flex items-center px-3 py-2 text-sm whitespace-nowrap hover:bg-gray-700 ${cat.className || ''}`}
-                onClick={e => {
-                  if (cat.name === 'All') {
-                    e.preventDefault();
-                    setShowAllCategories(!showAllCategories);
-                  }
-                }}
+          <nav className="flex items-center justify-between px-2">
+            {/* Visible categories, no overflow */}
+            <div className="flex-1 flex items-center">
+              {visibleCategories.map((cat, index) => (
+                <Link 
+                  key={index}
+                  to={cat.name === 'All' ? '#' : `/category/${cat.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  className={`nav-link flex items-center px-3 py-2 text-sm whitespace-nowrap hover:bg-gray-700 ${cat.className || ''}`}
+                  onClick={e => {
+                    if (cat.name === 'All') {
+                      e.preventDefault();
+                      setShowAllCategories(!showAllCategories);
+                    }
+                  }}
+                >
+                  {cat.icon && <span className="mr-1">{cat.icon}</span>}
+                  {cat.name}
+                </Link>
+              ))}
+            </div>
+
+            {/* More button if not all categories are visible */}
+            {visibleCategories.length < navCategories.length && (
+              <button
+                onClick={() => setShowAllCategories(true)}
+                className="flex items-center px-3 py-2 text-sm whitespace-nowrap hover:bg-gray-700"
               >
-                {cat.icon && <span className="mr-1">{cat.icon}</span>}
-                {cat.name}
-              </Link>
-            ))}
+                More <ChevronRight className="w-4 h-4 ml-1" />
+              </button>
+            )}
           </nav>
         </div>
       </div>
