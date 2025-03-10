@@ -22,9 +22,9 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
     'Sports'
   ];
 
-  // Categories for the horizontal navbar
+  // Categories for the horizontal navbar (matching Amazon style)
   const navCategories = [
-    { name: 'All', icon: <Menu className="w-4 h-4" /> },
+    { name: 'All', icon: <Menu className="w-4 h-4" />, className: 'font-bold' },
     { name: 'Same-Day Delivery', icon: null },
     { name: 'Medical Care', icon: null },
     { name: 'Alexa+', icon: null },
@@ -36,8 +36,8 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
 
   return (
     <header>
-      {/* Top navbar - dark background */}
-      <div className="bg-gray-900 text-white">
+      {/* Top navbar - dark blue background like Amazon */}
+      <div className="bg-amazon-blue text-white">
         <div className="max-w-[1500px] mx-auto">
           {/* Main header with logo, search, account */}
           <div className="flex items-center px-2 py-2 gap-2">
@@ -83,7 +83,7 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   className="flex-1 py-2 px-3 text-black text-sm border-none focus:outline-none"
                 />
                 
-                <button className="bg-yellow-400 hover:bg-yellow-500 px-4 flex items-center justify-center transition-colors">
+                <button className="bg-amazon-yellow hover:bg-yellow-500 px-4 flex items-center justify-center transition-colors">
                   <Search className="text-black w-5 h-5" />
                 </button>
               </div>
@@ -94,12 +94,20 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
               {/* Language */}
               <div className="flex items-center text-xs">
                 <span className="font-bold">EN</span>
+                <svg className="h-3 w-3 ml-1" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M19 9l-7 7-7-7"></path>
+                </svg>
               </div>
               
               {/* Account & Lists */}
               <div className="text-xs">
                 <div>Hello, Leonel</div>
-                <div className="font-bold">Account & Lists</div>
+                <div className="font-bold flex items-center">
+                  Account & Lists
+                  <svg className="h-3 w-3 ml-1" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </div>
               </div>
               
               {/* Returns & Orders */}
@@ -110,26 +118,28 @@ export function Header({ searchQuery, setSearchQuery }: HeaderProps) {
               
               {/* Cart */}
               <div className="relative">
-                <ShoppingCart className="w-8 h-8" />
-                <span className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  8
-                </span>
-                <span className="absolute -bottom-2 right-1 text-xs font-bold">Cart</span>
+                <div className="relative">
+                  <span className="absolute -top-1 left-4 bg-amazon-yellow text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    8
+                  </span>
+                  <ShoppingCart className="w-8 h-8" />
+                </div>
+                <span className="absolute -bottom-2 right-0 text-xs font-bold">Cart</span>
               </div>
             </div>
           </div>
         </div>
       </div>
       
-      {/* Category navbar */}
-      <div className="bg-[#232f3e] text-white">
+      {/* Category navbar with darker blue */}
+      <div className="bg-amazon-light text-white">
         <div className="max-w-[1500px] mx-auto">
           <nav className="flex overflow-x-hidden">
             {navCategories.map((cat, index) => (
               <Link 
                 key={index}
                 to={cat.name === 'All' ? '/' : `#${cat.name}`}
-                className="flex items-center px-3 py-2 text-sm whitespace-nowrap hover:bg-gray-700"
+                className={`nav-link flex items-center px-3 py-2 text-sm whitespace-nowrap hover:bg-gray-700 ${cat.className || ''}`}
               >
                 {cat.icon && <span className="mr-1">{cat.icon}</span>}
                 {cat.name}
