@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import type { Product } from '../types';
+import type { Product } from '../interfaces';
 
 interface ProductGridProps {
   title: string;
@@ -20,11 +20,11 @@ export function ProductGrid({
   showViewAllButton = true,
   maxItems = 3
 }: ProductGridProps) {
-  // Fallback image for products with missing/broken images
-  const fallbackImage = "https://via.placeholder.com/300x300?text=Product+Image";
+  // Reliable fallback image
+  const fallbackImage = "https://via.placeholder.com/300x300?text=Product";
 
   return (
-    <div className="bg-white rounded-lg p-4">
+    <div className="bg-white rounded-lg p-4 mb-6 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold">{title}</h2>
         <Link 
@@ -35,15 +35,15 @@ export function ProductGrid({
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.slice(0, maxItems).map(product => (
           <Link key={product.id} to={`/product/${product.id}`} className="block">
             <div className="text-center">
-              <div className="mb-2 h-32 flex items-center justify-center bg-gray-100 rounded-md">
+              <div className="mb-3 bg-gray-50 p-4 rounded flex items-center justify-center h-40">
                 <img 
                   src={product.image || fallbackImage} 
                   alt={product.name} 
-                  className="max-h-28 max-w-full object-contain"
+                  className="max-h-32 max-w-full object-contain transition-transform duration-300 hover:scale-105"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.onerror = null;
@@ -51,7 +51,7 @@ export function ProductGrid({
                   }}
                 />
               </div>
-              <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem] px-1">
+              <h3 className="text-sm font-medium text-gray-900 line-clamp-2 min-h-[2.5rem]">
                 {product.name}
               </h3>
             </div>
@@ -60,7 +60,7 @@ export function ProductGrid({
       </div>
 
       {showViewAllButton && (
-        <div className="mt-4 text-center">
+        <div className="mt-6 text-center">
           <Link 
             to={linkPath}
             className="inline-block px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
