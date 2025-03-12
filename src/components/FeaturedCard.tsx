@@ -20,6 +20,9 @@ export function FeaturedCard({
   backgroundColor = 'bg-white',
   textColor = 'text-gray-900'
 }: FeaturedCardProps) {
+  // Fallback image for broken links
+  const fallbackImage = "https://via.placeholder.com/800x400?text=Featured+Image";
+  
   return (
     <div className={`p-4 rounded-lg ${backgroundColor} h-full flex flex-col`}>
       <h2 className={`text-base font-bold mb-2 ${textColor}`}>{title}</h2>
@@ -28,11 +31,16 @@ export function FeaturedCard({
         <p className={`mb-2 text-xs ${textColor} opacity-90`}>{description}</p>
       )}
       
-      <div className="mb-3">
+      <div className="mb-3 bg-gray-100 rounded-md overflow-hidden">
         <img 
-          src={imageUrl} 
+          src={imageUrl}
           alt={title} 
-          className="w-full h-40 object-cover rounded hover:opacity-95 transition-opacity"
+          className="w-full h-40 object-cover"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.onerror = null;
+            target.src = fallbackImage;
+          }}
         />
       </div>
       
