@@ -17,11 +17,11 @@ export function FeaturedBanner({
     large: 'h-48 sm:h-56 md:h-64'
   }[height];
   
-  // Fallback image for broken links
-  const fallbackImage = "https://via.placeholder.com/1500x400?text=Featured+Banner";
+  // Reliable fallback image for banners
+  const fallbackImage = `https://via.placeholder.com/1500x400/e5e7eb/666666?text=${encodeURIComponent(altText || 'Featured Banner')}`;
 
   return (
-    <div className={`w-full overflow-hidden rounded-lg mb-4 ${heightClass} bg-gray-200`}>
+    <div className={`w-full overflow-hidden rounded-lg mb-4 ${heightClass} bg-gray-100 shadow-sm`}>
       <img 
         src={imageUrl} 
         alt={altText} 
