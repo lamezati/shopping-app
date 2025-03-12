@@ -1,122 +1,122 @@
 import React from 'react';
 import { CategorySection } from '../components/CategorySection';
 import { FeaturedCard } from '../components/FeaturedCard';
+import { ProductGrid } from '../components/ProductGrid';
+import { FeaturedBanner } from '../components/FeaturedBanner';
 import { mockProducts } from '../types';
-import { useState, useEffect } from 'react';
 
 export function HomePage() {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
   // Filter products by category
   const electronicsProducts = mockProducts.filter(product => product.category === 'Electronics');
-  const groceryProducts = mockProducts.filter(product => product.category === 'Grocery');
-  const homeProducts = mockProducts.filter(product => product.category.includes('Home') || product.category.includes('Cleaning'));
-  const beautyProducts = mockProducts.filter(product => product.category.includes('Beauty'));
-  
-  // Determine grid columns based on screen width
-  const getColumns = (): 5 | 6 => {
-    if (windowWidth < 640) return 5; // Mobile/Tablet: 5 columns
-    return 6; // Desktop: 6 columns
-  };
+  const smartphoneProducts = electronicsProducts.filter(product => product.subcategory.includes('Smartphone'));
+  const laptopProducts = electronicsProducts.filter(product => product.subcategory.includes('Computer'));
   
   return (
-    <div className="max-w-[1500px] mx-auto px-2 py-3">
-      {/* Hero Banner - smaller height */}
-      <div className="mb-3 rounded-lg overflow-hidden h-32 sm:h-40 md:h-48">
-        <img 
-          src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&auto=format&fit=crop&q=80" 
-          alt="Shop and compare prices" 
-          className="w-full h-full object-cover"
-        />
-      </div>
+    <div className="max-w-[1500px] mx-auto p-4">
+      {/* Hero Banner */}
+      <FeaturedBanner 
+        imageUrl="https://images.unsplash.com/photo-1614852207000-7e942605c7a4?w=1500&auto=format&fit=crop&q=80"
+        altText="Shop deals across multiple stores"
+        height="medium"
+      />
       
-      {/* Featured Categories Grid - more compact */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-3">
+      {/* Featured Cards Grid - 3 cards in a row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <FeaturedCard
           title="Deals related to items you've saved"
-          imageUrl="https://images.unsplash.com/photo-1601524909162-ae8725290836?w=800&auto=format&fit=crop&q=80"
+          imageUrl="https://images.unsplash.com/photo-1607082349566-187342175e2f?w=800&auto=format&fit=crop&q=80"
           linkPath="/deals/saved"
-          compact={true}
+          buttonText="See all deals"
         />
         
         <FeaturedCard
           title="Protect Your Mobile Device"
-          imageUrl="https://images.unsplash.com/photo-1530319067432-f2a729c03db5?w=800&auto=format&fit=crop&q=80"
+          imageUrl="https://images.unsplash.com/photo-1533228876829-65c94e7b5025?w=800&auto=format&fit=crop&q=80"
           linkPath="/category/mobile-accessories"
           buttonText="Shop phone cases"
-          compact={true}
         />
         
         <FeaturedCard
           title="Shop Today's Deals"
-          imageUrl="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80"
+          imageUrl="https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=800&auto=format&fit=crop&q=80"
           linkPath="/deals/today"
-          backgroundColor="bg-gray-100"
-          compact={true}
+          buttonText="See all deals"
         />
       </div>
       
-      {/* Category Sections - more compact with more columns */}
-      <CategorySection
-        title="Deals on tech"
-        products={electronicsProducts}
-        linkPath="/category/electronics"
-        columns={getColumns()}
-        compact={true}
-      />
+      {/* Deals on Tech */}
+      <div className="mb-6">
+        <ProductGrid
+          title="Deals on tech"
+          products={electronicsProducts.slice(0, 3)}
+          linkPath="/category/electronics"
+          viewAllText="See all"
+          showViewAllButton={true}
+        />
+      </div>
       
-      <CategorySection
-        title="Pet wellness must-haves"
-        products={electronicsProducts.slice(2, 6)} // Using electronics products as placeholders
-        linkPath="/category/pet-supplies"
-        columns={getColumns()}
-        theme="dark"
-        compact={true}
-      />
-      
-      <CategorySection
-        title="Shop Kitchen & Dining"
-        products={homeProducts.length ? homeProducts : electronicsProducts}
-        linkPath="/category/home-kitchen"
-        columns={getColumns()}
-        imageUrl="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=80"
-        compact={true}
-      />
-      
-      <CategorySection
-        title="Patio, Lawn & Garden"
-        products={homeProducts.length ? homeProducts : electronicsProducts}
-        linkPath="/category/garden"
-        columns={getColumns()}
-        theme="dark"
-        compact={true}
-      />
-
-      {/* Show more product categories in a compact view */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 my-3">
-        <CategorySection
-          title="Beauty & Personal Care"
-          products={beautyProducts.length ? beautyProducts : electronicsProducts.slice(0, 6)}
-          linkPath="/category/beauty"
-          columns={3}
-          compact={true}
+      {/* Two-column layout for smaller product grids */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        <ProductGrid
+          title="Smartphones"
+          products={smartphoneProducts.length ? smartphoneProducts : electronicsProducts.slice(0, 3)}
+          linkPath="/category/electronics/smartphones"
+          maxItems={3}
+          viewAllText="See all"
         />
         
+        <ProductGrid
+          title="Laptops & Computers"
+          products={laptopProducts.length ? laptopProducts : electronicsProducts.slice(0, 3)}
+          linkPath="/category/electronics/computers"
+          maxItems={3}
+          viewAllText="See all"
+        />
+      </div>
+      
+      {/* Category Sections - traditional grid layout with more products */}
+      <div className="mb-6">
         <CategorySection
-          title="Grocery & Gourmet"
-          products={groceryProducts.length ? groceryProducts : electronicsProducts.slice(0, 6)}
-          linkPath="/category/grocery"
-          columns={3}
-          compact={true}
+          title="Kitchen & Dining"
+          products={mockProducts.filter(p => p.category.includes('Kitchen') || p.category.includes('Home'))}
+          linkPath="/category/home-kitchen"
+          columns={6}
+        />
+      </div>
+      
+      {/* Featured Banner - middle placement */}
+      <div className="mb-6">
+        <FeaturedBanner 
+          imageUrl="https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=1500&auto=format&fit=crop&q=80"
+          altText="Explore summer deals"
+          height="small"
+        />
+      </div>
+      
+      {/* More sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+        <ProductGrid
+          title="Pet Supplies"
+          products={mockProducts.slice(3, 6)}
+          linkPath="/category/pet-supplies"
+          maxItems={1}
+          viewAllText="Shop pet supplies"
+        />
+        
+        <ProductGrid
+          title="Beauty & Personal Care"
+          products={mockProducts.filter(p => p.category.includes('Beauty'))}
+          linkPath="/category/beauty"
+          maxItems={1}
+          viewAllText="Shop beauty items"
+        />
+        
+        <ProductGrid
+          title="Home & Garden"
+          products={mockProducts.filter(p => p.category.includes('Home'))}
+          linkPath="/category/home-garden"
+          maxItems={1}
+          viewAllText="Shop home items"
         />
       </div>
     </div>
