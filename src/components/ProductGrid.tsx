@@ -20,6 +20,9 @@ export function ProductGrid({
   showViewAllButton = true,
   maxItems = 3
 }: ProductGridProps) {
+  // Fallback image for products with missing/broken images
+  const fallbackImage = "https://via.placeholder.com/300x300?text=Product+Image";
+
   return (
     <div className="bg-white rounded-lg p-4">
       <div className="flex items-center justify-between mb-4">
@@ -36,14 +39,19 @@ export function ProductGrid({
         {products.slice(0, maxItems).map(product => (
           <Link key={product.id} to={`/product/${product.id}`} className="block">
             <div className="text-center">
-              <div className="mb-2 h-32 flex items-center justify-center">
+              <div className="mb-2 h-32 flex items-center justify-center bg-gray-100 rounded-md">
                 <img 
-                  src={product.image} 
+                  src={product.image || fallbackImage} 
                   alt={product.name} 
-                  className="max-h-32 max-w-full object-contain"
+                  className="max-h-28 max-w-full object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = fallbackImage;
+                  }}
                 />
               </div>
-              <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">
+              <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem] px-1">
                 {product.name}
               </h3>
             </div>
