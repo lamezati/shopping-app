@@ -1,25 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { Header } from './components/Header';
 import { ProductDetail } from './components/ProductDetail';
 import { CategoryPage } from './pages/CategoryPage';
 import { HomePage } from './pages/HomePage';
+import allProducts from './data/productData';
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState(allProducts);
+
+  // Filter products based on search query
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredProducts(allProducts);
+    } else {
+      const query = searchQuery.toLowerCase();
+      const filtered = allProducts.filter(
+        product => 
+          product.name.toLowerCase().includes(query) ||
+          product.description.toLowerCase().includes(query) ||
+          product.category.toLowerCase().includes(query) ||
+          product.subcategory.toLowerCase().includes(query)
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [searchQuery]);
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-gray-100">
+      <div className="min-h-screen flex flex-col bg-gray-50">
         <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/category/:categoryId" element={<CategoryPage />} />
-          <Route path="/category/:categoryId/:subcategoryId" element={<CategoryPage />} />
-          <Route path="/deals/:dealType" element={<CategoryPage />} />
-          <Route path="/store/:storeName" element={<CategoryPage />} />
+          <Route path="/" element={<HomePage products={filteredProducts} searchQuery={searchQuery} />} />
+          <Route path="/product/:id" element={<ProductDetail products={allProducts} />} />
+          <Route path="/category/:categoryId" element={<CategoryPage products={filteredProducts} />} />
+          <Route path="/category/:categoryId/:subcategoryId" element={<CategoryPage products={filteredProducts} />} />
+          <Route path="/deals/:dealType" element={<CategoryPage products={filteredProducts} />} />
+          <Route path="/store/:storeName" element={<CategoryPage products={filteredProducts} />} />
         </Routes>
 
         <footer className="bg-gray-900 mt-auto">
