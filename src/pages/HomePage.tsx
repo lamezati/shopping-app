@@ -4,6 +4,7 @@ import { FeaturedCard } from '../components/FeaturedCard';
 import { ProductGrid } from '../components/ProductGrid';
 import { FeaturedBanner } from '../components/FeaturedBanner';
 import { Product } from '../interfaces';
+import { Link } from 'react-router-dom';
 
 interface HomePageProps {
   products: Product[];
@@ -32,26 +33,37 @@ export function HomePage({ products, searchQuery }: HomePageProps) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {products.map(product => (
-              <div key={product.id} className="bg-white p-3 rounded-lg shadow-sm">
-                <a href={`#/product/${product.id}`} className="block group">
-                  <div className="mb-2 h-32 flex items-center justify-center">
-                    <img 
-                      src={product.image}
-                      alt={product.name}
-                      className="max-h-32 max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.onerror = null;
-                        target.src = "https://via.placeholder.com/300x300?text=Product+Image";
-                      }}
-                    />
-                  </div>
-                  <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">{product.name}</h3>
-                </a>
+          <div className="bg-white p-4 rounded-lg shadow-sm">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-medium">Found {products.length} products</h2>
+              <div className="text-sm text-gray-500">
+                Comparing prices across multiple stores
               </div>
-            ))}
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              {products.map(product => (
+                <Link key={product.id} to={`/product/${product.id}`} className="block group">
+                  <div className="text-center bg-white p-3 rounded-lg shadow-sm transition-shadow hover:shadow-md">
+                    <div className="mb-3 bg-gray-50 p-2 rounded flex items-center justify-center h-36">
+                      <img 
+                        src={product.image}
+                        alt={product.name}
+                        className="max-h-32 max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = "https://via.placeholder.com/300x300?text=Product";
+                        }}
+                      />
+                    </div>
+                    <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem] text-gray-800">
+                      {product.name}
+                    </h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
       </div>
