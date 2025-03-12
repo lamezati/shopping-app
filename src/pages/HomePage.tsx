@@ -3,19 +3,66 @@ import { CategorySection } from '../components/CategorySection';
 import { FeaturedCard } from '../components/FeaturedCard';
 import { ProductGrid } from '../components/ProductGrid';
 import { FeaturedBanner } from '../components/FeaturedBanner';
-import { mockProducts } from '../types';
+import { Product } from '../interfaces';
 
-export function HomePage() {
+interface HomePageProps {
+  products: Product[];
+  searchQuery: string;
+}
+
+export function HomePage({ products, searchQuery }: HomePageProps) {
   // Filter products by category
-  const electronicsProducts = mockProducts.filter(product => product.category === 'Electronics');
+  const electronicsProducts = products.filter(product => product.category === 'Electronics');
   const smartphoneProducts = electronicsProducts.filter(product => product.subcategory.includes('Smartphone'));
   const laptopProducts = electronicsProducts.filter(product => product.subcategory.includes('Computer'));
+  const homeKitchenProducts = products.filter(product => product.category === 'Home & Kitchen');
+  const cleaningProducts = products.filter(product => product.category === 'Cleaning & Household');
+  
+  // If search query is present, show search results instead of the normal homepage
+  if (searchQuery.trim() !== '') {
+    return (
+      <div className="max-w-[1500px] mx-auto p-4">
+        <h1 className="text-xl font-bold mb-4">Search Results for "{searchQuery}"</h1>
+        
+        {products.length === 0 ? (
+          <div className="bg-white p-8 rounded-lg shadow text-center">
+            <h2 className="text-lg font-medium mb-2">No results found</h2>
+            <p className="text-gray-600">
+              We couldn't find any products matching your search. Try using different keywords or browse our categories.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {products.map(product => (
+              <div key={product.id} className="bg-white p-3 rounded-lg shadow-sm">
+                <a href={`#/product/${product.id}`} className="block group">
+                  <div className="mb-2 h-32 flex items-center justify-center">
+                    <img 
+                      src={product.image}
+                      alt={product.name}
+                      className="max-h-32 max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = "https://via.placeholder.com/300x300?text=Product+Image";
+                      }}
+                    />
+                  </div>
+                  <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">{product.name}</h3>
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
   
   return (
     <div className="max-w-[1500px] mx-auto p-4">
       {/* Hero Banner */}
       <FeaturedBanner 
-        imageUrl="https://images.unsplash.com/photo-1614852207000-7e942605c7a4?w=1500&auto=format&fit=crop&q=80"
+        imageUrl="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1500&auto=format&fit=crop&q=80"
         altText="Shop deals across multiple stores"
         height="medium"
       />
@@ -32,7 +79,7 @@ export function HomePage() {
         <FeaturedCard
           title="Protect Your Mobile Device"
           imageUrl="https://images.unsplash.com/photo-1533228876829-65c94e7b5025?w=800&auto=format&fit=crop&q=80"
-          linkPath="/category/mobile-accessories"
+          linkPath="/category/electronics/smartphones-accessories"
           buttonText="Shop phone cases"
         />
         
@@ -59,26 +106,26 @@ export function HomePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         <ProductGrid
           title="Smartphones"
-          products={smartphoneProducts.length ? smartphoneProducts : electronicsProducts.slice(0, 3)}
-          linkPath="/category/electronics/smartphones"
+          products={smartphoneProducts.length ? smartphoneProducts.slice(0, 3) : electronicsProducts.slice(0, 3)}
+          linkPath="/category/electronics/smartphones-accessories"
           maxItems={3}
           viewAllText="See all"
         />
         
         <ProductGrid
           title="Laptops & Computers"
-          products={laptopProducts.length ? laptopProducts : electronicsProducts.slice(0, 3)}
-          linkPath="/category/electronics/computers"
+          products={laptopProducts.length ? laptopProducts.slice(0, 3) : electronicsProducts.slice(3, 6)}
+          linkPath="/category/electronics/computers-tablets"
           maxItems={3}
           viewAllText="See all"
         />
       </div>
       
-      {/* Category Sections - traditional grid layout with more products */}
+      {/* Home & Kitchen Section */}
       <div className="mb-6">
         <CategorySection
           title="Kitchen & Dining"
-          products={mockProducts.filter(p => p.category.includes('Kitchen') || p.category.includes('Home'))}
+          products={homeKitchenProducts.length ? homeKitchenProducts : electronicsProducts.slice(0, 10)}
           linkPath="/category/home-kitchen"
           columns={6}
         />
@@ -93,30 +140,30 @@ export function HomePage() {
         />
       </div>
       
-      {/* More sections */}
+      {/* More sections - three columns */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <ProductGrid
-          title="Pet Supplies"
-          products={mockProducts.slice(3, 6)}
-          linkPath="/category/pet-supplies"
+          title="Cleaning Supplies"
+          products={cleaningProducts.length ? cleaningProducts.slice(0, 1) : electronicsProducts.slice(0, 1)}
+          linkPath="/category/cleaning-household"
           maxItems={1}
-          viewAllText="Shop pet supplies"
+          viewAllText="Shop cleaning supplies"
         />
         
         <ProductGrid
-          title="Beauty & Personal Care"
-          products={mockProducts.filter(p => p.category.includes('Beauty'))}
-          linkPath="/category/beauty"
+          title="Home Entertainment"
+          products={electronicsProducts.filter(p => p.subcategory.includes('Audio')).slice(0, 1)}
+          linkPath="/category/electronics/audio-headphones"
           maxItems={1}
-          viewAllText="Shop beauty items"
+          viewAllText="Shop audio devices"
         />
         
         <ProductGrid
-          title="Home & Garden"
-          products={mockProducts.filter(p => p.category.includes('Home'))}
-          linkPath="/category/home-garden"
+          title="Photography"
+          products={electronicsProducts.filter(p => p.subcategory.includes('Camera')).slice(0, 1)}
+          linkPath="/category/electronics/cameras-photography"
           maxItems={1}
-          viewAllText="Shop home items"
+          viewAllText="Shop cameras"
         />
       </div>
     </div>
