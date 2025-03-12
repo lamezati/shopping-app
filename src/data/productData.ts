@@ -68,12 +68,111 @@ const generateRetailers = (productName: string, basePrice: number): Product['ret
   });
 };
 
+// Helper function to choose an image from a reliable set
+const getProductImage = (category: string, product: string, index: number): string => {
+  // Placeholder image URLs that are guaranteed to work
+  const placeholders = {
+    smartphone: [
+      'https://via.placeholder.com/300x300/eef/fff?text=iPhone',
+      'https://via.placeholder.com/300x300/efe/fff?text=Samsung',
+      'https://via.placeholder.com/300x300/fee/fff?text=Google+Pixel',
+      'https://via.placeholder.com/300x300/eff/fff?text=OnePlus'
+    ],
+    laptop: [
+      'https://via.placeholder.com/300x300/eef/fff?text=MacBook',
+      'https://via.placeholder.com/300x300/efe/fff?text=Dell+XPS',
+      'https://via.placeholder.com/300x300/fee/fff?text=Lenovo',
+      'https://via.placeholder.com/300x300/eff/fff?text=ASUS'
+    ],
+    audio: [
+      'https://via.placeholder.com/300x300/eef/fff?text=Headphones',
+      'https://via.placeholder.com/300x300/efe/fff?text=Earbuds',
+      'https://via.placeholder.com/300x300/fee/fff?text=Speaker',
+      'https://via.placeholder.com/300x300/eff/fff?text=Soundbar'
+    ],
+    camera: [
+      'https://via.placeholder.com/300x300/eef/fff?text=DSLR',
+      'https://via.placeholder.com/300x300/efe/fff?text=Mirrorless',
+      'https://via.placeholder.com/300x300/fee/fff?text=Action+Cam',
+      'https://via.placeholder.com/300x300/eff/fff?text=Lens'
+    ],
+    kitchen: [
+      'https://via.placeholder.com/300x300/eef/fff?text=Blender',
+      'https://via.placeholder.com/300x300/efe/fff?text=Mixer',
+      'https://via.placeholder.com/300x300/fee/fff?text=Air+Fryer',
+      'https://via.placeholder.com/300x300/eff/fff?text=Pressure+Cooker',
+      'https://via.placeholder.com/300x300/fef/fff?text=Toaster+Oven',
+      'https://via.placeholder.com/300x300/eff/fff?text=Food+Processor',
+      'https://via.placeholder.com/300x300/fee/fff?text=Coffee+Maker',
+      'https://via.placeholder.com/300x300/efe/fff?text=Cookware'
+    ],
+    grocery: [
+      'https://via.placeholder.com/300x300/efe/fff?text=Organic+Produce',
+      'https://via.placeholder.com/300x300/fee/fff?text=Dairy',
+      'https://via.placeholder.com/300x300/eff/fff?text=Pantry+Items',
+      'https://via.placeholder.com/300x300/eef/fff?text=Fresh+Fruits'
+    ],
+    cleaning: [
+      'https://via.placeholder.com/300x300/eef/fff?text=Cleaner',
+      'https://via.placeholder.com/300x300/efe/fff?text=Detergent',
+      'https://via.placeholder.com/300x300/fee/fff?text=Supplies',
+      'https://via.placeholder.com/300x300/eff/fff?text=Eco+Friendly'
+    ],
+    default: [
+      'https://via.placeholder.com/300x300/eee/fff?text=Product',
+      'https://via.placeholder.com/300x300/eee/fff?text=Item',
+      'https://via.placeholder.com/300x300/eee/fff?text=Quality+Product',
+      'https://via.placeholder.com/300x300/eee/fff?text=Premium+Item'
+    ]
+  };
+
+  // Determine which array to use based on category and product name
+  let imageArray = placeholders.default;
+  
+  if (product.toLowerCase().includes('iphone') || 
+      product.toLowerCase().includes('samsung') || 
+      product.toLowerCase().includes('pixel') ||
+      category.toLowerCase().includes('smartphone')) {
+    imageArray = placeholders.smartphone;
+  } else if (product.toLowerCase().includes('macbook') || 
+             product.toLowerCase().includes('laptop') ||
+             product.toLowerCase().includes('dell') ||
+             category.toLowerCase().includes('computer')) {
+    imageArray = placeholders.laptop;
+  } else if (product.toLowerCase().includes('headphone') || 
+             product.toLowerCase().includes('speaker') ||
+             product.toLowerCase().includes('audio') ||
+             category.toLowerCase().includes('audio')) {
+    imageArray = placeholders.audio;
+  } else if (product.toLowerCase().includes('camera') || 
+             product.toLowerCase().includes('lens') ||
+             product.toLowerCase().includes('photo') ||
+             category.toLowerCase().includes('camera')) {
+    imageArray = placeholders.camera;
+  } else if (product.toLowerCase().includes('blender') || 
+             product.toLowerCase().includes('mixer') ||
+             product.toLowerCase().includes('kitchen') ||
+             category.toLowerCase().includes('kitchen')) {
+    imageArray = placeholders.kitchen;
+  } else if (product.toLowerCase().includes('organic') || 
+             product.toLowerCase().includes('food') ||
+             category.toLowerCase().includes('grocery')) {
+    imageArray = placeholders.grocery;
+  } else if (product.toLowerCase().includes('cleaner') || 
+             product.toLowerCase().includes('detergent') ||
+             category.toLowerCase().includes('cleaning')) {
+    imageArray = placeholders.cleaning;
+  }
+  
+  // Select an image from the appropriate array
+  return imageArray[index % imageArray.length];
+};
+
 // Function to generate products for a specific category and subcategory
 const generateCategoryProducts = (
   category: string,
   subcategory: string,
   productNames: string[],
-  baseImageUrl: string,
   features: string[],
   priceRange: { min: number; max: number }
 ): Product[] => {
@@ -81,8 +180,8 @@ const generateCategoryProducts = (
     const basePrice = generatePrice(priceRange.min, priceRange.max);
     const id = generateId(category, subcategory, index + 1);
     
-    // Ensure consistent image URLs that work without breaking
-    const image = `https://source.unsplash.com/featured/?${encodeURIComponent(name.toLowerCase().split(' ')[0])}&sig=${index}`;
+    // Generate a reliable image URL based on the product category and name
+    const image = getProductImage(subcategory, name, index);
 
     return {
       id,
@@ -119,7 +218,6 @@ const electronicsProducts: Product[] = [
       'USB-C Fast Charging Cable (10ft)',
       'Tempered Glass Screen Protector'
     ],
-    'https://source.unsplash.com/random/?smartphone&sig=',
     [
       'Fast processor',
       'High-resolution display',
@@ -151,7 +249,6 @@ const electronicsProducts: Product[] = [
       'Laptop Cooling Pad',
       'USB-C Hub Adapter'
     ],
-    'https://source.unsplash.com/random/?laptop&sig=',
     [
       'High-performance CPU',
       'Dedicated graphics card',
@@ -183,7 +280,6 @@ const electronicsProducts: Product[] = [
       'Beats Fit Pro',
       'Headphone Stand'
     ],
-    'https://source.unsplash.com/random/?headphones&sig=',
     [
       'Active noise cancellation',
       'Long battery life',
@@ -215,7 +311,6 @@ const electronicsProducts: Product[] = [
       'SD Card 128GB',
       'Ring Light'
     ],
-    'https://source.unsplash.com/random/?camera&sig=',
     [
       'High-resolution sensor',
       'Fast autofocus',
@@ -229,6 +324,102 @@ const electronicsProducts: Product[] = [
       'Dual memory card slots'
     ],
     { min: 299, max: 3999 }
+  )
+];
+
+// Home & Kitchen Category
+const homeKitchenProducts: Product[] = [
+  // Kitchen Appliances
+  ...generateCategoryProducts(
+    'Home & Kitchen',
+    'Kitchen Appliances',
+    [
+      'High-Performance Blender (1500W)',
+      'Programmable Slow Cooker (6 quart)',
+      'Digital Air Fryer (5.8 quart)',
+      'Stand Mixer with Attachments (5 quart)',
+      'Electric Pressure Cooker (8 quart)',
+      'Toaster Oven with Air Fry Function',
+      'Electric Kettle (1.7 liter)',
+      'Food Processor (12 cup)',
+      'Espresso Machine with Milk Frother',
+      'Smart Countertop Convection Oven'
+    ],
+    [
+      'Energy efficient',
+      'Digital controls',
+      'Stainless steel finish',
+      'Multiple settings',
+      'Easy to clean',
+      'Dishwasher-safe parts',
+      'Precise temperature control',
+      'Timer function',
+      'Compact design',
+      'Safety features'
+    ],
+    { min: 49.99, max: 399.99 }
+  ),
+  
+  // Cookware & Bakeware
+  ...generateCategoryProducts(
+    'Home & Kitchen',
+    'Cookware & Bakeware',
+    [
+      'Stainless Steel Cookware Set (10 piece)',
+      'Cast Iron Skillet (12 inch)',
+      'Non-Stick Frying Pan Set (8/10/12 inch)',
+      'Dutch Oven with Lid (6 quart)',
+      'Silicone Baking Mat Set (3 pack)',
+      'Ceramic Baking Dish Set (3 piece)',
+      'Muffin Pan (12 cup)',
+      'Bread Loaf Pan (9x5 inch)',
+      'Cookie Sheet Set (3 pack)',
+      'Glass Mixing Bowl Set (3 piece)'
+    ],
+    [
+      'Dishwasher safe',
+      'Oven safe',
+      'PFOA-free',
+      'Non-stick coating',
+      'Even heat distribution',
+      'Durable construction',
+      'Ergonomic handles',
+      'Tempered glass lids',
+      'Stackable design',
+      'Lifetime warranty'
+    ],
+    { min: 19.99, max: 249.99 }
+  ),
+  
+  // Home Décor
+  ...generateCategoryProducts(
+    'Home & Kitchen',
+    'Home Décor',
+    [
+      'Decorative Throw Pillow Covers (Set of 4)',
+      'Handwoven Throw Blanket',
+      'LED String Lights (33 ft)',
+      'Scented Soy Candle Gift Set (3 pack)',
+      'Floating Wall Shelves (Set of 3)',
+      'Framed Wall Art Print (24x36 inch)',
+      'Macramé Wall Hanging',
+      'Ceramic Vase Set (3 piece)',
+      'Artificial Potted Plant',
+      'Moroccan Area Rug (5x8 ft)'
+    ],
+    [
+      'Handcrafted',
+      'Premium materials',
+      'Modern design',
+      'Versatile style',
+      'Easy to install',
+      'Eco-friendly',
+      'Unique patterns',
+      'Coordinating pieces',
+      'Durable construction',
+      'Easy to clean'
+    ],
+    { min: 14.99, max: 199.99 }
   )
 ];
 
@@ -250,7 +441,6 @@ const groceryProducts: Product[] = [
       'Organic Bell Peppers (3 pack)',
       'Organic Carrots (2 lb bag)'
     ],
-    'https://source.unsplash.com/random/?produce&sig=',
     [
       'Organic certified',
       'Non-GMO',
@@ -282,7 +472,6 @@ const groceryProducts: Product[] = [
       'Organic Free-Range Eggs (18 pack)',
       'Organic Butter (16 oz)'
     ],
-    'https://source.unsplash.com/random/?dairy&sig=',
     [
       'Organic certified',
       'Hormone-free',
@@ -314,7 +503,6 @@ const groceryProducts: Product[] = [
       'Organic Peanut Butter (16 oz)',
       'Organic Honey (16 oz)'
     ],
-    'https://source.unsplash.com/random/?pantry&sig=',
     [
       'Organic certified',
       'Non-GMO',
@@ -349,7 +537,6 @@ const householdProducts: Product[] = [
       'Scrub Sponges (6 pack)',
       'Dish Scrubber Brush'
     ],
-    'https://source.unsplash.com/random/?cleaning&sig=',
     [
       'Eco-friendly',
       'Biodegradable',
@@ -381,7 +568,6 @@ const householdProducts: Product[] = [
       'Foldable Clothes Drying Rack',
       'Dryer Sheets (120 count)'
     ],
-    'https://source.unsplash.com/random/?laundry&sig=',
     [
       'Plant-based',
       'Eco-friendly',
@@ -413,7 +599,6 @@ const householdProducts: Product[] = [
       'Compostable Plates (50 count)',
       'Biodegradable Straws (200 count)'
     ],
-    'https://source.unsplash.com/random/?paper&sig=',
     [
       'Biodegradable',
       'Compostable',
@@ -427,105 +612,6 @@ const householdProducts: Product[] = [
       'Eco-friendly'
     ],
     { min: 3.99, max: 19.99 }
-  )
-];
-
-// Home & Kitchen Category
-const homeKitchenProducts: Product[] = [
-  // Kitchen Appliances
-  ...generateCategoryProducts(
-    'Home & Kitchen',
-    'Kitchen Appliances',
-    [
-      'High-Performance Blender (1500W)',
-      'Programmable Slow Cooker (6 quart)',
-      'Digital Air Fryer (5.8 quart)',
-      'Stand Mixer with Attachments (5 quart)',
-      'Electric Pressure Cooker (8 quart)',
-      'Toaster Oven with Air Fry Function',
-      'Electric Kettle (1.7 liter)',
-      'Food Processor (12 cup)',
-      'Espresso Machine with Milk Frother',
-      'Smart Countertop Convection Oven'
-    ],
-    'https://source.unsplash.com/random/?appliance&sig=',
-    [
-      'Energy efficient',
-      'Digital controls',
-      'Stainless steel finish',
-      'Multiple settings',
-      'Easy to clean',
-      'Dishwasher-safe parts',
-      'Precise temperature control',
-      'Timer function',
-      'Compact design',
-      'Safety features'
-    ],
-    { min: 49.99, max: 399.99 }
-  ),
-  
-  // Cookware & Bakeware
-  ...generateCategoryProducts(
-    'Home & Kitchen',
-    'Cookware & Bakeware',
-    [
-      'Stainless Steel Cookware Set (10 piece)',
-      'Cast Iron Skillet (12 inch)',
-      'Non-Stick Frying Pan Set (8/10/12 inch)',
-      'Dutch Oven with Lid (6 quart)',
-      'Silicone Baking Mat Set (3 pack)',
-      'Ceramic Baking Dish Set (3 piece)',
-      'Muffin Pan (12 cup)',
-      'Bread Loaf Pan (9x5 inch)',
-      'Cookie Sheet Set (3 pack)',
-      'Glass Mixing Bowl Set (3 piece)'
-    ],
-    'https://source.unsplash.com/random/?cookware&sig=',
-    [
-      'Dishwasher safe',
-      'Oven safe',
-      'PFOA-free',
-      'Non-stick coating',
-      'Even heat distribution',
-      'Durable construction',
-      'Ergonomic handles',
-      'Tempered glass lids',
-      'Stackable design',
-      'Lifetime warranty'
-    ],
-    { min: 19.99, max: 249.99 }
-  ),
-  
-  // Home Décor
-  ...generateCategoryProducts(
-    'Home & Kitchen',
-    'Home Décor',
-    [
-      'Decorative Throw Pillow Covers (Set of 4)',
-      'Handwoven Throw Blanket',
-      'LED String Lights (33 ft)',
-      'Scented Soy Candle Gift Set (3 pack)',
-      'Floating Wall Shelves (Set of 3)',
-      'Framed Wall Art Print (24x36 inch)',
-      'Macramé Wall Hanging',
-      'Ceramic Vase Set (3 piece)',
-      'Artificial Potted Plant',
-      'Moroccan Area Rug (5x8 ft)'
-    ],
-    'https://source.unsplash.com/random/?decor&sig=',
-    [
-      'Handcrafted',
-      'Premium materials',
-      'Modern design',
-      'Versatile style',
-      'Easy to install',
-      'Eco-friendly',
-      'Unique patterns',
-      'Coordinating pieces',
-      'Durable construction',
-      'Easy to clean'
-    ],
-    { min: 14.99, max: 199.99 }
   )
 ];
 
